@@ -9,22 +9,25 @@ const SUFFIX = ";";
 const ZIG_FILE_ENDING = ".zig";
 
 pub fn convertContent(
-    allocator: *std.mem.Allocator, 
+    allocator: *const std.mem.Allocator, 
     name: []const u8, 
     content: []const u8
 ) ![]const u8 {
-    const name_length = std.mem.len(name);
-    const prefix_length = std.mem.len(PREFIX) + name_length + std.mem.len(PREFIX2);
-    const suffix_length = std.mem.len(SUFFIX);
-    const content_length = std.mem.len(content);
+    const name_length = name.len;
+    const prefix_length = PREFIX.len + name_length + PREFIX2.len;
+    const suffix_length = SUFFIX.len;
+    
+    const trimmed_content = std.mem.trimRight(u8, content, &[_]u8{ '\r', '\n'});
+    const content_length = trimmed_content.len;
 
     const buffer_size = prefix_length + content_length + suffix_length;
 
-    const buffer = allocator.alloc(u8, buffer_size);
+    const buffer = try allocator.alloc(u8, buffer_size);
 
-    try std.fmt.bufPrint(buffer, "{s}{s}{s}{s}{s}", .{
+
+    _ = try std.fmt.bufPrint(buffer, "{s}{s}{s}{s}{s}", .{
         PREFIX, name, PREFIX2,
-        content,
+        trimmed_content[0..content_length],
         SUFFIX
     });
 
@@ -32,38 +35,39 @@ pub fn convertContent(
 }
 
 pub fn convertFile(
-    allocator: *std.mem.Allocator,
+    allocator: *const std.mem.Allocator,
     path: []const u8,
     name: []const u8
 ) ![]const u8 {
     // Convert content into a valid zig module
-    var content = try fileHandler.readFile(allocator, path);
-    content = try convertContent(allocator, name, content);
+    const content = try fileHandler.readFile(allocator, path);
+    const converted_content = try convertContent(allocator, name, content);
+    defer allocator.free(content);
+    defer allocator.free(converted_content);
     
     // Create Directory if it doesn't exist
-    std.fs.cwd().openDir(fileHandler.ZONFIG_DIR, .{}) catch |err| {
-        switch (err) {
-            std.fs.Dir.OpenError.FileNotFound => {
-                try std.fs.cwd().makeDir(fileHandler.ZONFIG_DIR);
-            },
-            _ => {
-                return err;
-            }
+    if (std.fs.cwd().openDir(fileHandler.ZONFIG_DIR, .{})) |_| {} 
+    else |err| {
+        if (err == error.FileNotFound) {
+            try std.fs.cwd().makeDir(fileHandler.ZONFIG_DIR);
         }
-    };
+        else {
+            return err;
+        }
+    }
 
     // Generate new path
-    // +1 for the additional slash
-    const buffer_size = std.mem.len(fileHandler.ZONFIG_DIR) + std.mem.len(name) + std.mem.len(ZIG_FILE_ENDING) + 1;
+    const buffer_size = fileHandler.ZONFIG_DIR.len + name.len + ZIG_FILE_ENDING.len;
    
-    const buffer = allocator.alloc(u8, buffer_size);
-    try std.fmt.bufPrint(buffer, "{s}/{s}{s}", .{
+    const buffer = try allocator.alloc(u8, buffer_size);
+    _ = try std.fmt.bufPrint(buffer, "{s}{s}{s}", .{
         fileHandler.ZONFIG_DIR,
         name,
         ZIG_FILE_ENDING
     });
 
-    try fileHandler.writeFile(buffer, content);
+    // Write to file 
+    try fileHandler.writeFile(buffer, converted_content);
 
     return buffer;
 }

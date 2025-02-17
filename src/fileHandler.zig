@@ -1,8 +1,8 @@
 const std = @import("std");
 
-pub const ZONFIG_DIR = ".zonfig";
+pub const ZONFIG_DIR = ".zonfig/";
 
-pub fn readFile(allocator: *std.mem.Allocator, path: []const u8) ![]const u8 {
+pub fn readFile(allocator: *const std.mem.Allocator, path: []const u8) ![]const u8 {
     var file = try std.fs.cwd().openFile(path, .{});
     defer file.close();
         
@@ -10,16 +10,14 @@ pub fn readFile(allocator: *std.mem.Allocator, path: []const u8) ![]const u8 {
 
     const buffer = try allocator.alloc(u8, file_size);
 
-    try file.readAll(buffer);
+     _ = try file.readAll(buffer);
 
     return buffer;
 }
 
 pub fn writeFile(path: []const u8, content: []const u8) !void {
-    const file = try std.fs.cwd().openFile(path, .{
+    const file = try std.fs.cwd().createFile(path, .{
         .read = false,
-        .write = true,
-        .create = true,
         .truncate = true,
     });
     defer file.close();
