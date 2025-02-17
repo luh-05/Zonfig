@@ -1,5 +1,7 @@
 const std = @import("std");
 
+pub const ZONFIG_DIR = ".zonfig";
+
 pub fn readFile(allocator: *std.mem.Allocator, path: []const u8) ![]const u8 {
     var file = try std.fs.cwd().openFile(path, .{});
     defer file.close();
