@@ -3,7 +3,7 @@
 
 ## Why
 I wanted to create a library, that can be configured at comptime. For that I needed some _notation format_. My mind has immediately gone to _JSON_, as I have used that in the past for the same purpose. But that was quite annoying to do, as I ended writing a very sketchy little translator from JSON to Zig.  
-When I pondering ways to get around having to do this again, I thought of _ZON_, which is as approachable as _JSON_ but very very close in syntax to a _Zig module_.  
+When I was pondering ways to get around having to do this again, I thought of _ZON_, which is as approachable as _JSON_ but very very close in syntax to a _Zig module_.  
 
 So I decided to make a little translation library for translating _ZON_ to a _Zig module_ for use in `build.zig`.
 
