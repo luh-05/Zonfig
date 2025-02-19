@@ -1,4 +1,9 @@
 const std = @import("std");
+const zonfig_module = @import("./src/zonfig.zig");
+
+pub fn addConfig(b: *std.Build, module: *std.Build.Module, path: []const u8, name: []const u8) !void {
+    return zonfig_module.addConfig(b, module, path, name);
+}
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
