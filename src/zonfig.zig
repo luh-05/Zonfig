@@ -3,7 +3,7 @@ const std = @import("std");
 const convert = @import("./convert.zig");
 
 fn createConfigModule(b: *std.Build, target: *std.Build.ResolvedTarget, optimize: *std.builtin.OptimizeMode, path: []const u8, name: []const u8) !*std.Build.Module {
-    const zig_path = try convert.convertFile(b.allocator, path, name);
+    const zig_path = try convert.convertFile(&b.allocator, path, name);
     defer b.allocator.free(zig_path);
     const module = b.addModule(name, .{
         .root_source_file = b.path(zig_path),
