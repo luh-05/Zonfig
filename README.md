@@ -8,8 +8,35 @@ When I was pondering ways to get around having to do this again, I thought of _Z
 So I decided to make a little translation library for translating _ZON_ to a _Zig module_ for use in `build.zig`.
 
 ## How to use
-Using **Zonfig** is very easy. Just include it in your `build.zig` and call `addConfig` with your `Builder`, the `Module` you want to import the configuration to, the _path_ of the `.zon` file, and the _name_ by which you later want to reference the configuration in code.  
-Once that's done you can just import your configuration module like any other and write code depending on it.
+Using **Zonfig** is very easy. Just include it in your `build.zig.zon` and include it on your `build.zig` like this:
+```zig
+const zonfig = @import("zonfig");
+```
+And call `addConfig`:
+```zig
+try zonfig.addConfig(b, your-module, "./config.zon", "config");
+```
+That's all you need to access you're newly generated config module! Simply add
+```zig
+const config = @import("config");
+```
+to your module and you're good to go!
+### Using tooling
+#### DISCLAIMER
+This is not a feature yet, but this will likely come at some point. Including this does not hurt though.
+Use `@hasField`, `@field`, and `@typeInfo` for now to achieve the same thing!
+---
+To use the provided tooling follow these steps:
+In your `build.zig`, create a dependency like this and add the `zonfig` module defined in it to your module:
+```zig
+const zonfig_dep = b.dependency("zonfig", .{
+  .target = target,
+  .optimize = optimize,
+});
 
-### Unknown keys
-If you have a configuration that has unknown keys at the time of writing the code, that also works. For that look into `@hasField`, `@field`, and `@typeInfo`.
+your-module.addImport("zonfig", zonfig_dep.module("zonfig"));
+```
+This allows you to import **zonfig** by adding:
+```zig
+const zonfig = @import("zonfig");
+```
