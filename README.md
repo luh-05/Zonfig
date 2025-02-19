@@ -14,7 +14,7 @@ const zonfig = @import("zonfig");
 ```
 And call `addConfig`:
 ```zig
-try zonfig.addConfig(b, your-module, "./config.zon", "config");
+try zonfig.addConfig(b, your_module, "./config.zon", "config");
 ```
 That's all you need to access you're newly generated config module! Simply add
 ```zig
@@ -34,7 +34,7 @@ const zonfig_dep = b.dependency("zonfig", .{
   .optimize = optimize,
 });
 
-your-module.addImport("zonfig", zonfig_dep.module("zonfig"));
+your_module.addImport("zonfig", zonfig_dep.module("zonfig"));
 ```
 This allows you to import **zonfig** by adding:
 ```zig
