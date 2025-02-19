@@ -18,7 +18,7 @@ try zonfig.addConfig(b, your_module, "./config.zon", "config");
 ```
 That's all you need to access you're newly generated config module! Simply add
 ```zig
-const config = @import("config");
+const config = @import("config").config;
 ```
 to your module and you're good to go!
 ### Using tooling
