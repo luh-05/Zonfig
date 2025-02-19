@@ -4,14 +4,21 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const lib = b.addStaticLibrary(.{
-        .name = "zonfig",
+    //const lib = b.addStaticLibrary(.{
+    //    .name = "zonfig",
+    //    .root_source_file = b.path("src/zonfig.zig"),
+    //    .target = target,
+    //    .optimize = optimize,
+    //});
+
+    //b.installArtifact(lib);
+
+    const module = b.addModule("zonfig", .{
         .root_source_file = b.path("src/zonfig.zig"),
         .target = target,
         .optimize = optimize,
     });
-
-    b.installArtifact(lib);
+    _ = module;
 
     // Creates a step for unit testing. This only builds the test executable
     // but does not run it.
