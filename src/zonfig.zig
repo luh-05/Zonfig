@@ -7,8 +7,8 @@ fn createConfigModule(b: *std.Build, target: std.Build.ResolvedTarget, optimize:
     defer b.allocator.free(zig_path);
     const module = b.addModule(name, .{
         .root_source_file = b.path(zig_path),
-        .target = target,
-        .optimize = optimize,
+        .target = target.?,
+        .optimize = optimize.?,
     });
 
     return module;
