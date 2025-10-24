@@ -1,7 +1,7 @@
 # Zonfig
 **Zonfig** is a simple module for `build.zig`, that enables adding `.zon` files as modules for _comptime_ configuration.
 
-## ⚠️ ATTENTION - This is not maintained and is bade obsolete by zig 0.15
+## ⚠️ ATTENTION - This is not maintained and is made obsolete by zig 0.15
 
 ## Why
 I wanted to create a library, that can be configured at comptime. For that I needed some _notation format_. My mind has immediately gone to _JSON_, as I have used that in the past for the same purpose. But that was quite annoying to do, as I ended writing a very sketchy little translator from JSON to Zig.  
